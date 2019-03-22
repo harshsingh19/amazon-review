@@ -15,6 +15,8 @@ import re
 import pandas as pd
 from wordcloud import WordCloud,STOPWORDS
 import matplotlib.pyplot as plt
+import time
+import os
 review =[]
 rating = []
 clean_rating = []
@@ -80,7 +82,10 @@ def csv_saver():
     global clean_rating ,clean_review
     pairs = {'Clean_Rating': clean_rating, 'Clean_Review': clean_review}
     df = pd.DataFrame.from_dict(pairs)
-    df.to_csv('Data.csv')
+    if os.path.exists("Data.csv"):
+        df.to_csv('Data.csv'.format(int(time.time())))
+    else:
+        df.to_csv('Data{}.csv')
     print("\n\n\nFile Saved as Data.csv")
 def attribute_getter(soup):
     title = str(soup.findAll("div",{ "id":"titleSection"}))
@@ -94,9 +99,15 @@ def attribute_getter(soup):
     description = cleanhtml(description)
     attribute_saver(title,over_all_rating,description)
 def attribute_saver(title,over_all_rating,description):
-    with open("Attribute.txt","w") as f:
-        f.write("Title : %s\n\nOverall Rating : %s \n\nDescription : %s"%(title,over_all_rating,description))
-        f.close()
+    if os.path.exists("Attribute.txt"):
+        with open('Attribute{}.txt'.format(int(time.time())),'w') as f:
+            f.write("Title : %s\n\nOverall Rating : %s \n\nDescription : %s"%(title,over_all_rating,description))
+            f.close()
+    else:
+        with open("Attribute.txt","w") as f:
+            f.write("Title : %s\n\nOverall Rating : %s \n\nDescription : %s"%(title,over_all_rating,description))
+            f.close()
+    
     print("Title Description and Overall Rating stored in Attribute.txt")
 def word_cloud_all():
     global clean_review
