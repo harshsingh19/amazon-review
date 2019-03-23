@@ -21,6 +21,9 @@ review =[]
 rating = []
 clean_rating = []
 clean_review = []
+positive=[]
+netural=[]
+negative=[]
 
 def cleanhtml(raw_html):
     cleanr = re.compile('<.*?>')
@@ -75,7 +78,7 @@ def review_getter(soup):
         review_taker(soup)
         rating_taker(soup)
 def rating_equalizer():
-    global clean_rating ,clean_review
+    global clean_rating ,clean_review,positive,negative,netural
     if len(clean_review) != len(clean_rating):
         clean_rating = clean_rating[:len(clean_review)]
 def csv_saver():
@@ -83,9 +86,9 @@ def csv_saver():
     pairs = {'Clean_Rating': clean_rating, 'Clean_Review': clean_review}
     df = pd.DataFrame.from_dict(pairs)
     if os.path.exists("Data.csv"):
-        df.to_csv('Data.csv'.format(int(time.time())))
+        df.to_csv('Data{}.csv'.format(int(time.time())))
     else:
-        df.to_csv('Data{}.csv')
+        df.to_csv('Data.csv')
     print("\n\n\nFile Saved as Data.csv")
 def attribute_getter(soup):
     title = str(soup.findAll("div",{ "id":"titleSection"}))
@@ -107,7 +110,6 @@ def attribute_saver(title,over_all_rating,description):
         with open("Attribute.txt","w") as f:
             f.write("Title : %s\n\nOverall Rating : %s \n\nDescription : %s"%(title,over_all_rating,description))
             f.close()
-    
     print("Title Description and Overall Rating stored in Attribute.txt")
 def word_cloud_all():
     global clean_review
@@ -127,6 +129,29 @@ def word_cloud_all():
     plt.axis("off")
     plt.tight_layout(pad =0)
     plt.show()
+def split_negative_positive_netural():
+    global positive,netural,negative,clean_rating,clean_review
+    for i in range(len(clean_rating)):
+        temp = clean_rating[i]
+        temp = int(float(temp[:3]))
+        clean_rating[i] = temp
+    _dict = dict(zip(clean_review,clean_rating))
+    for i,j in _dict.items():
+        if j >=4:
+            positive.append(i)
+        elif j<3:
+            negative.append(i)
+        else:
+            netural.append(i)
+    if os.path.exists('cluster.txt'):
+        with open('cluster{}.txt'.format(int(time.time())),'w') as f:
+            f.write("Positive : %s\n\nNetural : %s \n\nNegative : %s"%(positive,netural,negative))
+            f.close()
+    else:
+        with open("cluster.txt","w") as f:
+            f.write("Positive : %s\n\nNetural : %s \n\nNegative : %s"%(positive,netural,negative))
+            f.close()
+    print("Made Negative Positve and Netural Cluster and saved it as cluster.txt")
 if __name__ == "__main__":
     url = input("Enter the Product URL")
     soup = html_data_returner(url)
@@ -135,6 +160,6 @@ if __name__ == "__main__":
         soup_review = review_pagefinder(soup)
         review_getter(soup_review)
         rating_equalizer()
-        word_cloud_all()
+        #word_cloud_all()
         csv_saver()
-
+        split_negative_positive_netural()
