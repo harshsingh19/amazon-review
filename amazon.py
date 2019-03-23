@@ -111,10 +111,9 @@ def attribute_saver(title,over_all_rating,description):
             f.write("Title : %s\n\nOverall Rating : %s \n\nDescription : %s"%(title,over_all_rating,description))
             f.close()
     print("Title Description and Overall Rating stored in Attribute.txt")
-def word_cloud_all():
-    global clean_review
+def word_cloud_(value):
     _str = ''
-    for i in clean_review:
+    for i in value:
         _str = _str+i
     stopwords = set(STOPWORDS)
     wc = WordCloud(width =800,
@@ -143,6 +142,14 @@ def split_negative_positive_netural():
             negative.append(i)
         else:
             netural.append(i)
+    print("Positive Word Cloud")
+    word_cloud_(positive)
+    print("Negative Word Cloud")
+    word_cloud_(negative)
+    print("Netural Word Cloud")
+    word_cloud_(netural)
+    print("Overall Word Cloud")
+    word_cloud_(clean_review)
     if os.path.exists('cluster.txt'):
         with open('cluster{}.txt'.format(int(time.time())),'w') as f:
             f.write("Positive : %s\n\nNetural : %s \n\nNegative : %s"%(positive,netural,negative))
@@ -160,6 +167,6 @@ if __name__ == "__main__":
         soup_review = review_pagefinder(soup)
         review_getter(soup_review)
         rating_equalizer()
-        #word_cloud_all()
         csv_saver()
         split_negative_positive_netural()
+
