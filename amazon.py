@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Wed Mar 20 20:28:30 2019
+Created on Mon Apr  8 19:58:48 2019
 
 @author: harsh
 """
@@ -98,10 +98,17 @@ def csv_saver():
     global clean_rating ,clean_review
     pairs = {'Clean_Rating': clean_rating, 'Clean_Review': clean_review}
     df = pd.DataFrame.from_dict(pairs)
-    if os.path.exists("Data.csv"):
-        df.to_csv('Data{}.csv'.format(int(time.time())))
+    if os.path.exists("Data"):
+        if os.path.exists("Data.csv"):
+            df.to_csv('Data{}.csv'.format(int(time.time())))
+        else:
+            df.to_csv('Data.csv')
     else:
-        df.to_csv('Data.csv')
+        os.mkdir("Data")
+        if os.path.exists("Data.csv"):
+            df.to_csv('Data{}.csv'.format(int(time.time())))
+        else:
+            df.to_csv('Data.csv')
     print("\n\n\nFile Saved as Data.csv")
 def attribute_getter(soup):
     title = str(soup.findAll("div",{ "id":"titleSection"}))
@@ -193,17 +200,17 @@ def split_negative_positive_netural():
     print("Overall Word Cloud")
     word_cloud_(clean_review)
     if os.path.exists("Cluster"):
-        if os.path.exists('cluster.txt'):
-            with open('cluster{}.txt'.format(int(time.time())),'w') as f:
+        if os.path.exists('Cluster/cluster.txt'):
+            with open('Cluster/cluster{}.txt'.format(int(time.time())),'w') as f:
                 f.write("Positive : %s\n\nNetural : %s \n\nNegative : %s"%(positive,netural,negative))
                 f.close()
         else:
-            with open("cluster.txt","w") as f:
+            with open("Cluster/cluster.txt","w") as f:
                 f.write("Positive : %s\n\nNetural : %s \n\nNegative : %s"%(positive,netural,negative))
                 f.close()
     else :
         os.mkdir('Cluster')
-        if os.path.exists('cluster.txt'):
+        if os.path.exists('Cluster/cluster.txt'):
             with open('cluster{}.txt'.format(int(time.time())),'w') as f:
                 f.write("Positive : %s\n\nNetural : %s \n\nNegative : %s"%(positive,netural,negative))
                 f.close()
