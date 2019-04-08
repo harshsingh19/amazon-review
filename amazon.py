@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Mon Apr  8 19:58:48 2019
+Created on Mon Apr  8 20:12:34 2019
 
 @author: harsh
 """
@@ -99,16 +99,16 @@ def csv_saver():
     pairs = {'Clean_Rating': clean_rating, 'Clean_Review': clean_review}
     df = pd.DataFrame.from_dict(pairs)
     if os.path.exists("Data"):
-        if os.path.exists("Data.csv"):
-            df.to_csv('Data{}.csv'.format(int(time.time())))
+        if os.path.exists("Data/Data.csv"):
+            df.to_csv('Data/Data{}.csv'.format(int(time.time())))
         else:
-            df.to_csv('Data.csv')
+            df.to_csv('Data/Data.csv')
     else:
         os.mkdir("Data")
-        if os.path.exists("Data.csv"):
-            df.to_csv('Data{}.csv'.format(int(time.time())))
+        if os.path.exists("Data/Data.csv"):
+            df.to_csv('Data/Data{}.csv'.format(int(time.time())))
         else:
-            df.to_csv('Data.csv')
+            df.to_csv('Data/Data.csv')
     print("\n\n\nFile Saved as Data.csv")
 def attribute_getter(soup):
     title = str(soup.findAll("div",{ "id":"titleSection"}))
@@ -124,7 +124,7 @@ def attribute_getter(soup):
 def attribute_saver(title,over_all_rating,description):
     if os.path.exists("Attribute"):
         if os.path.exists("Attribute/Attribute.txt"):
-            with open('Attribute{}.txt'.format(int(time.time())),'w') as f:
+            with open('Attribute/Attribute{}.txt'.format(int(time.time())),'w') as f:
                 f.write("Title : %s\n\nOverall Rating : %s \n\nDescription : %s"%(title,over_all_rating,description))
                 f.close()
         else:
@@ -134,7 +134,7 @@ def attribute_saver(title,over_all_rating,description):
     else:
         os.mkdir("Attribute")
         if os.path.exists("Attribute/Attribute.txt"):
-            with open('Attribute{}.txt'.format(int(time.time())),'w') as f:
+            with open('Attribute/Attribute{}.txt'.format(int(time.time())),'w') as f:
                 f.write("Title : %s\n\nOverall Rating : %s \n\nDescription : %s"%(title,over_all_rating,description))
                 f.close()
         else:
