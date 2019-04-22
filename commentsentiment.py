@@ -12,7 +12,6 @@ warnings.filterwarnings("ignore", message="numpy.ufunc size changed")
 
 import pandas as pd
 from bs4 import BeautifulSoup
-from FeatureExtractionSpacy import FeaturExtractionSpacy
 import itertools
 from itertools import chain
 from textblob import TextBlob
