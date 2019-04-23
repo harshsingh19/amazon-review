@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Mon Apr  8 20:12:34 2019
+Created on Wed Mar 20 20:28:30 2019
 
 @author: harsh
 """
@@ -19,6 +19,8 @@ review =[]
 rating = []
 clean_rating = []
 clean_review = []
+clean_timeing =[]
+timeing = []
 positive=[]
 netural=[]
 negative=[]
@@ -49,7 +51,13 @@ def rating_taker(soup):
         clean_rating.append(cleanhtml(i))
     rating = []
 
-
+def time_review(soup):
+    global timeing,clean_timeing
+    for i in soup.findAll("span",{ "data-hook":"review-date"}):
+        timeing.append(str(i))
+    for i in timeing:
+        clean_timeing.append(cleanhtml(i))
+    timeing=[]
 def html_data_returner(url):
     headers_Get = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36',
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
@@ -76,6 +84,7 @@ def review_pagefinder(soup):
     soup = html_data_returner(url)
     review_taker(soup)
     rating_taker(soup)
+    time_review(soup)
     return soup
 
 def review_getter(soup):
@@ -90,13 +99,14 @@ def review_getter(soup):
         soup = html_data_returner(url)
         review_taker(soup)
         rating_taker(soup)
+        time_review(soup)
 def rating_equalizer():
     global clean_rating ,clean_review,positive,negative,netural
     if len(clean_review) != len(clean_rating):
         clean_rating = clean_rating[:len(clean_review)]
 def csv_saver():
-    global clean_rating ,clean_review
-    pairs = {'Clean_Rating': clean_rating, 'Clean_Review': clean_review}
+    global clean_rating ,clean_review,timeing
+    pairs = {'Clean_Rating': clean_rating, 'Clean_Review': clean_review, 'Time':clean_timeing}
     df = pd.DataFrame.from_dict(pairs)
     if os.path.exists("Data"):
         if os.path.exists("Data/Data.csv"):
@@ -178,47 +188,50 @@ def word_cloud_(value):
     except:
         print("Unable to make word cloud")
 def split_negative_positive_netural():
-    global positive,netural,negative,clean_rating,clean_review
-    for i in range(len(clean_rating)):
-        temp = clean_rating[i]
-        temp = int(float(temp[:3]))
-        clean_rating[i] = temp
-    _dict = dict(zip(clean_review,clean_rating))
-    for i,j in _dict.items():
-        if j >=4:
-            positive.append(i)
-        elif j<3:
-            negative.append(i)
-        else:
-            netural.append(i)
-    print("Positive Word Cloud")
-    word_cloud_(positive)
-    print("Negative Word Cloud")
-    word_cloud_(negative)
-    print("Netural Word Cloud")
-    word_cloud_(netural)
-    print("Overall Word Cloud")
-    word_cloud_(clean_review)
-    if os.path.exists("Cluster"):
-        if os.path.exists('Cluster/cluster.txt'):
-            with open('Cluster/cluster{}.txt'.format(int(time.time())),'w') as f:
-                f.write("Positive : %s\n\nNetural : %s \n\nNegative : %s"%(positive,netural,negative))
-                f.close()
-        else:
-            with open("Cluster/cluster.txt","w") as f:
-                f.write("Positive : %s\n\nNetural : %s \n\nNegative : %s"%(positive,netural,negative))
-                f.close()
-    else :
-        os.mkdir('Cluster')
-        if os.path.exists('Cluster/cluster.txt'):
-            with open('cluster{}.txt'.format(int(time.time())),'w') as f:
-                f.write("Positive : %s\n\nNetural : %s \n\nNegative : %s"%(positive,netural,negative))
-                f.close()
-        else:
-            with open("cluster.txt","w") as f:
-                f.write("Positive : %s\n\nNetural : %s \n\nNegative : %s"%(positive,netural,negative))
-                f.close()
-    print("Made Negative Positve and Netural Cluster and saved it as cluster.txt")
+    try:
+        global positive,netural,negative,clean_rating,clean_review
+        for i in range(len(clean_rating)):
+            temp = clean_rating[i]
+            temp = int(float(temp[:3]))
+            clean_rating[i] = temp
+        _dict = dict(zip(clean_review,clean_rating))
+        for i,j in _dict.items():
+            if j >=4:
+                positive.append(i)
+            elif j<3:
+                negative.append(i)
+            else:
+                netural.append(i)
+        print("Positive Word Cloud")
+        word_cloud_(positive)
+        print("Negative Word Cloud")
+        word_cloud_(negative)
+        print("Netural Word Cloud")
+        word_cloud_(netural)
+        print("Overall Word Cloud")
+        word_cloud_(clean_review)
+        if os.path.exists("Cluster"):
+            if os.path.exists('Cluster/cluster.txt'):
+                with open('Cluster/cluster{}.txt'.format(int(time.time())),'w') as f:
+                    f.write("Positive : %s\n\nNetural : %s \n\nNegative : %s"%(positive,netural,negative))
+                    f.close()
+            else:
+                with open("Cluster/cluster.txt","w") as f:
+                    f.write("Positive : %s\n\nNetural : %s \n\nNegative : %s"%(positive,netural,negative))
+                    f.close()
+        else :
+            os.mkdir('Cluster')
+            if os.path.exists('Cluster/cluster.txt'):
+                with open('cluster{}.txt'.format(int(time.time())),'w') as f:
+                    f.write("Positive : %s\n\nNetural : %s \n\nNegative : %s"%(positive,netural,negative))
+                    f.close()
+            else:
+                with open("cluster.txt","w") as f:
+                    f.write("Positive : %s\n\nNetural : %s \n\nNegative : %s"%(positive,netural,negative))
+                    f.close()
+        print("Made Negative Positve and Netural Cluster and saved it as cluster.txt")
+    except:
+        pass
 if __name__ == "__main__":
     url = input("Enter the Product URL")
     soup = html_data_returner(url)
