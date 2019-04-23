@@ -242,4 +242,3 @@ if __name__ == "__main__":
         rating_equalizer()
         csv_saver()
         split_negative_positive_netural()
-
