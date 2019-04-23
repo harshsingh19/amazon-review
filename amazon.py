@@ -75,31 +75,36 @@ def html_data_returner(url):
         print("\nUnable to get the resopnse from web page.")
         pass
 def review_pagefinder(soup):    
-    count = 0
-    for link in soup.findAll("a",{"class": "a-link-emphasis a-text-bold"}):
-        review_link = link.get('href')
-        count = count +1
-        print("Count of no of review page ",count)
-    url = "https://www.amazon.in"+review_link
-    soup = html_data_returner(url)
-    review_taker(soup)
-    rating_taker(soup)
-    time_review(soup)
-    return soup
-
-def review_getter(soup):
-    count =1
-    while len(soup.findAll("li",{ "class":"a-disabled a-last"})) == 0:
-        for link in soup.findAll("li",{"class": "a-last"}):
-            review_link = link.a.get('href')
+    try:
+        count = 0
+        for link in soup.findAll("a",{"class": "a-link-emphasis a-text-bold"}):
+            review_link = link.get('href')
             count = count +1
             print("Count of no of review page ",count)
         url = "https://www.amazon.in"+review_link
-        time.sleep(3)
         soup = html_data_returner(url)
         review_taker(soup)
         rating_taker(soup)
         time_review(soup)
+        return soup
+    except:
+        pass
+def review_getter(soup):
+    try:
+        count =1
+        while len(soup.findAll("li",{ "class":"a-disabled a-last"})) == 0:
+            for link in soup.findAll("li",{"class": "a-last"}):
+                review_link = link.a.get('href')
+                count = count +1
+                print("Count of no of review page ",count)
+            url = "https://www.amazon.in"+review_link
+            time.sleep(3)
+            soup = html_data_returner(url)
+            review_taker(soup)
+            rating_taker(soup)
+            time_review(soup)
+    except:
+        pass        
 def rating_equalizer():
     global clean_rating ,clean_review,positive,negative,netural
     if len(clean_review) != len(clean_rating):
@@ -242,3 +247,4 @@ if __name__ == "__main__":
         rating_equalizer()
         csv_saver()
         split_negative_positive_netural()
+
