@@ -151,16 +151,15 @@ def SavingFile(required_df):
    
     
 
-df = pd.read_csv("Data/Data1555333122.csv")
-df = df.dropna()
-df = df.drop(['Unnamed: 0'],axis =1)
-reviews = df.drop(['Time'],axis =1)
-required_df = df
-required_df = required_df[required_df['Clean_Review'].apply(lambda x : stripp(x))!='']
-required_df['Clean_Review'] = required_df['Clean_Review'].apply(lambda x: BeautifulSoup(x, "lxml").text)
-required_df['paras'] = required_df['Clean_Review'].apply(lambda x: get_paras(x))
-
-SavingFile(required_df)   
-
-
-
+def main_seniment(df):
+    try:
+        df = df.dropna()
+        required_df = df
+        required_df = required_df[required_df['Clean_Review'].apply(lambda x : stripp(x))!='']
+        required_df['Clean_Review'] = required_df['Clean_Review'].apply(lambda x: BeautifulSoup(x, "lxml").text)
+        required_df['paras'] = required_df['Clean_Review'].apply(lambda x: get_paras(x))
+        SavingFile(required_df)   
+        return 'Sucess'
+    except:
+        return 'Unsucess'
+    
