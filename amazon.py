@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 import time
 import os
 import requests
-
+from commentsentiment import main_seniment
 review =[]
 rating = []
 clean_rating = []
@@ -125,6 +125,7 @@ def csv_saver():
         else:
             df.to_csv('Data/Data.csv')
     print("\n\n\nFile Saved as Data.csv")
+    return df
 def attribute_getter(soup):
     title = str(soup.findAll("div",{ "id":"titleSection"}))
     over_all_rating = str(soup.findAll("div",{ "id":"averageCustomerReviews"}))
@@ -237,14 +238,14 @@ def split_negative_positive_netural():
         print("Made Negative Positve and Netural Cluster and saved it as cluster.txt")
     except:
         pass
-if __name__ == "__main__":
-    url = input("Enter the Product URL")
+def main(url):
     soup = html_data_returner(url)
     if soup is not None:
         attribute_getter(soup)
         soup_review = review_pagefinder(soup)
         review_getter(soup_review)
         rating_equalizer()
-        csv_saver()
+        df = csv_saver()
         split_negative_positive_netural()
-
+        checkval = main_seniment(df)
+        return checkval
