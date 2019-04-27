@@ -123,15 +123,10 @@ def SavingFile(required_df):
     FinalCorpDF = pd.DataFrame(columns=["Corpus", "Sentiment","Score"])
     print ("Runnig")
     for index, row in required_df.iterrows():
-        # for paras in required_df['IRN_NOTE_MR(-1,"",,,,0,,3,,0)']:
-        # print row['IRN_NOTE_MR(-1,"",,,,0,,3,,0)']
-            # df = pd.concat([df,SentenceSentimentScore(paras)],ignore_index=True)
         SentDF, CorpDF = SentenceNCorpusSentimentScore(row['Clean_Review'])
         FinalSentDF = FinalSentDF.append(SentDF)
         FinalCorpDF = FinalCorpDF.append(CorpDF)
-        # pd.concat([df,SentenceSentimentScore(paras)], ignore_index=True)
     print ("Saving")
-        # a = SentenceSentimentScore(text)
     if os.path.exists("Data_Output"):
         if os.path.exists("Data_Output/SentenceSentiment.csv"):
             FinalSentDF.to_csv("Data_Output/SentenceSentiment{}.csv".format(int(time.time())),encoding='utf-8')
