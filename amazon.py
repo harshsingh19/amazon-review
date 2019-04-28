@@ -138,26 +138,45 @@ def attribute_getter(soup):
     description = cleanhtml(description)
     attribute_saver(title,over_all_rating,description)
 def attribute_saver(title,over_all_rating,description):
-    if os.path.exists("Attribute"):
-        if os.path.exists("Attribute/Attribute.txt"):
-            with open('Attribute/Attribute{}.txt'.format(int(time.time())),'w') as f:
-                f.write("Title : %s\n\nOverall Rating : %s \n\nDescription : %s"%(title,over_all_rating,description))
-                f.close()
+    try:
+        pairs = {'Title': title, 'Over_All_Rating': over_all_rating, 'Description':description}
+        df = pd.Series(pairs)
+        df = pd.DataFrame.from_dict(df)
+        df = df.transpose()
+        if os.path.exists("Attribute"):
+            if os.path.exists("Attribute/Attribute.txt"):
+                with open('Attribute/Attribute{}.txt'.format(int(time.time())),'w') as f:
+                    f.write("Title : %s\n\nOverall Rating : %s \n\nDescription : %s"%(title,over_all_rating,description))
+                    f.close()
+            else:
+                with open("Attribute/Attribute.txt","w") as f:
+                    f.write("Title : %s\n\nOverall Rating : %s \n\nDescription : %s"%(title,over_all_rating,description))
+                    f.close()
         else:
-            with open("Attribute/Attribute.txt","w") as f:
-                f.write("Title : %s\n\nOverall Rating : %s \n\nDescription : %s"%(title,over_all_rating,description))
-                f.close()
-    else:
-        os.mkdir("Attribute")
-        if os.path.exists("Attribute/Attribute.txt"):
-            with open('Attribute/Attribute{}.txt'.format(int(time.time())),'w') as f:
-                f.write("Title : %s\n\nOverall Rating : %s \n\nDescription : %s"%(title,over_all_rating,description))
-                f.close()
-        else:
-            with open("Attribute/Attribute.txt","w") as f:
-                f.write("Title : %s\n\nOverall Rating : %s \n\nDescription : %s"%(title,over_all_rating,description))
-                f.close()
-    print("Title Description and Overall Rating stored in Attribute.txt")
+            os.mkdir("Attribute")
+            if os.path.exists("Attribute/Attribute.txt"):
+                with open('Attribute/Attribute{}.txt'.format(int(time.time())),'w') as f:
+                    f.write("Title : %s\n\nOverall Rating : %s \n\nDescription : %s"%(title,over_all_rating,description))
+                    f.close()
+            else:
+                with open("Attribute/Attribute.txt","w") as f:
+                    f.write("Title : %s\n\nOverall Rating : %s \n\nDescription : %s"%(title,over_all_rating,description))
+                    f.close()
+                    
+        if os.path.exists("Attribute"):
+            if os.path.exists('Attribute/Attribute.csv'):
+                df.to_csv('Attribute/Attribute{}.csv'.format(int(time.time())))
+            else:
+                df.to_csv('Attribute/Attribute.csv')
+        else :
+            os.mkdir('Attribute')
+            if os.path.exists('Attribute/Attribute.csv'):
+                df.to_csv('Attribute/Attribute{}.csv'.format(int(time.time())))
+            else:
+                df.to_csv('Attribute/Attribute.csv')
+        print("Title Description and Overall Rating stored in Attribute.csv")
+    except :
+        pass
 def word_cloud_(value):
     try:
         _str = ''
@@ -208,14 +227,48 @@ def split_negative_positive_netural():
                 negative.append(i)
             else:
                 netural.append(i)
-        print("Positive Word Cloud")
-        word_cloud_(positive)
-        print("Negative Word Cloud")
-        word_cloud_(negative)
-        print("Netural Word Cloud")
-        word_cloud_(netural)
-        print("Overall Word Cloud")
-        word_cloud_(clean_review)
+        if len(positive)>0 and len(negative)>0 and len(netural)>0:
+            pairs = {'Positive': positive, 'Negative': negative, 'Netural':netural}
+            df = pd.DataFrame.from_dict(pairs,orient='index')
+            df = df.transpose()
+            print("Positive Word Cloud")
+            word_cloud_(positive)
+            print("Negative Word Cloud")
+            word_cloud_(negative)
+            print("Netural Word Cloud")
+            word_cloud_(netural)
+            print("Overall Word Cloud")
+            word_cloud_(clean_review)
+        elif len(negative)==0:
+            pairs = {'Positive': positive, 'Netural':netural}
+            df = pd.DataFrame.from_dict(pairs,orient='index')            
+            df = df.transpose()
+            print("Positive Word Cloud")
+            word_cloud_(positive)
+            print("Netural Word Cloud")
+            word_cloud_(netural)
+            print("Overall Word Cloud")
+            word_cloud_(clean_review)
+        elif len(positive)==0:
+            pairs = {'Negative': negative, 'Netural':netural}
+            df = pd.DataFrame.from_dict(pairs,orient='index')
+            df = df.transpose()
+            print("Negative Word Cloud")
+            word_cloud_(negative)
+            print("Netural Word Cloud")
+            word_cloud_(netural)
+            print("Overall Word Cloud")
+            word_cloud_(clean_review)
+        else:
+            pairs = {'Positive': positive, 'Negative': negative}
+            df = pd.DataFrame.from_dict(pairs,orient='index')
+            df = df.transpose()
+            print("Positive Word Cloud")
+            word_cloud_(positive)
+            print("Negative Word Cloud")
+            word_cloud_(negative)
+            print("Overall Word Cloud")
+            word_cloud_(clean_review)
         if os.path.exists("Cluster"):
             if os.path.exists('Cluster/cluster.txt'):
                 with open('Cluster/cluster{}.txt'.format(int(time.time())),'w') as f:
@@ -235,9 +288,21 @@ def split_negative_positive_netural():
                 with open("cluster.txt","w") as f:
                     f.write("Positive : %s\n\nNetural : %s \n\nNegative : %s"%(positive,netural,negative))
                     f.close()
-        print("Made Negative Positve and Netural Cluster and saved it as cluster.txt")
+        if os.path.exists("Cluster"):
+            if os.path.exists('Cluster/Cluster.csv'):
+                df.to_csv('Cluster/Cluster{}.csv'.format(int(time.time())))
+            else:
+                 df.to_csv('Cluster/Cluster.csv')
+        else :
+            os.mkdir('Cluster')
+            if os.path.exists('Cluster/Cluster.csv'):
+                df.to_csv('Cluster/Cluster{}.csv'.format(int(time.time())))
+            else:
+                 df.to_csv('Cluster/Cluster.csv')
+        print("Made Negative Positve and Netural Cluster and saved it as cluster.csv")
     except:
         pass
+
 def main(url):
     soup = html_data_returner(url)
     if soup is not None:
