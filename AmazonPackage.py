@@ -50,6 +50,8 @@ class Amazon():
         ch.setLevel(logging.ERROR)
         ih = logging.StreamHandler()
         ih.setLevel(logging.INFO)
+        wh = logging.StreamHandler()
+        wh.setLevel(logging.WARNING)
         # create formatter and add it to the handlers
         formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
         fh.setFormatter(formatter)
@@ -292,7 +294,7 @@ class Amazon():
                 self.df.to_csv('Data/Data{}.csv'.format(int(time.time())))
             else:
                 self.df.to_csv('Data/Data.csv')
-        self.logger.info("\n\n\nFile Saved as Data.csv")
+        self.logger.info("File Saved as Data.csv")
         self.clean_rating = []
         self.clean_review = []
         self.clean_timeing = []
@@ -352,5 +354,3 @@ class Amazon():
         else:
             self.logger.info("Please enter Valid URL")
         self.logger.info("Search Product Garbage collector: collected %d objects.(END)" % (gc.collect()))
-amazon = Amazon()
-amazon.product_URL("https://www.amazon.in/B11-Extra-Handled-Sturdy-Weight/dp/B01MD18PBI/ref=sr_1_2?dchild=1&keywords=shoe+horn&qid=1585478999&sr=8-2")
