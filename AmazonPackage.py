@@ -302,6 +302,9 @@ class Amazon():
         self.clean_review_title =[]
         self.title = ""
         return self.df
+    def searchKeyword(self,keyword,kinddleInclude):
+        url = "https://www.amazon.in/s?k="+ keyword +"&ref=nb_sb_noss_2"
+        self.search_URL(url,kinddleInclude)
     def product_URL(self,url):
         self.logger.info("Product Garbage collector: collected %d objects.(START)" % (gc.collect()))
         if url is not None:
@@ -354,3 +357,17 @@ class Amazon():
         else:
             self.logger.info("Please enter Valid URL")
         self.logger.info("Search Product Garbage collector: collected %d objects.(END)" % (gc.collect()))
+        
+class Twitter(Amazon):
+    def __init__(self):
+        self.setupLogging()
+        self.headers_Get={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            'Accept-Language': 'en-US,en;q=0.5',
+            'Accept-Encoding': 'gzip, deflate',
+            'DNT': '1',
+            'Connection': 'keep-alive',
+            'Upgrade-Insecure-Requests': '1'}
+    def searchTwitter(self,url):
+        return self.html_data_returner(url)
+
