@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 import re
 import pandas as pd
 import gc
-import logging 
+import logging
 
 class Amazon():
     def __init__(self):
@@ -28,7 +28,7 @@ class Amazon():
         self.search_links =[]
         self.title=""
         self.kinddleInclude = False
-        
+
     def setupLogging(self):
         self.logger =logging.getLogger("Harsh")
         self.logger.setLevel(logging.DEBUG)
@@ -82,7 +82,7 @@ class Amazon():
         if len(self.clean_review) != len(self.clean_rating):
             self.clean_rating = self.clean_rating[:len(self.clean_review)]
             self.clean_review_name = self.clean_review_name[:len(self.clean_review)]
-    def product_pagefinder(self,soup):    
+    def product_pagefinder(self,soup):
         try:
             soup = BeautifulSoup(str(soup).strip('<!-- EndNav -->'),'html.parser')
             for i in soup.findAll("span",{ "class":"aok-inline-block zg-item"}):
@@ -96,7 +96,7 @@ class Amazon():
         try:
             soup = self.html_data_returner(url)
             if soup is not None:
-                
+
                 self.product_pagefinder(soup)
                 while len(soup.findAll("li",{ "class":"a-disabled a-last"})) == 0:
                     for link in soup.findAll("li",{"class": "a-last"}):
@@ -140,7 +140,7 @@ class Amazon():
         self.review_name_taker(soup)
         self.review_title_taker(soup)
         return url
-    def review_productPage(self,url):    
+    def review_productPage(self,url):
         try:
             soup = self.html_data_returner(url)
             if soup is not None:
@@ -174,7 +174,7 @@ class Amazon():
                     self.review_title_taker(soup)
         except:
             self.logger.error("Exception occurred", exc_info=True)
-            pass  
+            pass
     def review_taker(self,soup):
         review =[]
         count = 0
@@ -218,7 +218,7 @@ class Amazon():
         for i in timeing:
             self.clean_timeing.append(self.cleanhtml(i))
         timeing=[]
-        
+
     def attribute_getter(self,url):
         soup = self.html_data_returner(url)
         if soup is not None:
@@ -259,7 +259,7 @@ class Amazon():
                     with open("Attribute/Attribute.txt","w") as f:
                         f.write("Title : %s\n\nOverall Rating : %s \n\nDescription : %s"%(self.title,self.over_all_rating,self.description))
                         f.close()
-                        
+
             if os.path.exists("Attribute"):
                 if os.path.exists('Attribute/Attribute.csv'):
                     df.to_csv('Attribute/Attribute{}.csv'.format(int(time.time())))
@@ -354,3 +354,7 @@ class Amazon():
         else:
             self.logger.info("Please enter Valid URL")
         self.logger.info("Search Product Garbage collector: collected %d objects.(END)" % (gc.collect()))
+
+
+amz = Amazon()
+amz.search_URL("https://www.amazon.in/s?k=Dell+Inspiron+3583+15.6-inch+FHD+Laptop&i=computers&ref=nb_sb_noss_2",False)
