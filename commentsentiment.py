@@ -17,7 +17,7 @@ import numpy as np
 import time
 import spacy
 from spacy.lang.en.stop_words import STOP_WORDS
-nlp = spacy.load('en')
+nlp = spacy.load('en_core_web_sm')
 cachedStopWords= set(STOP_WORDS)
 cachedStopWords.remove('not')
 from nltk.sentiment import SentimentAnalyzer
