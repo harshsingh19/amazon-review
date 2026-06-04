@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Results &#8211; Amazon Review Analyzer</title>
+</head>
+<body>
+    <h1>Results</h1>
+    <p>Status: {{ result }}</p>
+
+    {% if attribute %}
+    <h2>Attributes</h2>
+    <ul>
+        {% for f in attribute %}
+        <li><a href="{{ url_for('download', folder='Attribute', filename=f) }}">{{ f }}</a></li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    {% if cluster %}
+    <h2>Cluster</h2>
+    <ul>
+        {% for f in cluster %}
+        <li><a href="{{ url_for('download', folder='Cluster', filename=f) }}">{{ f }}</a></li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    {% if output %}
+    <h2>Data Output</h2>
+    <ul>
+        {% for f in output %}
+        <li><a href="{{ url_for('download', folder='Data_Output', filename=f) }}">{{ f }}</a></li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    {% if images %}
+    <h2>Wordcloud Images</h2>
+    <ul>
+        {% for f in images %}
+        <li><a href="{{ url_for('download', folder='image_data_store', filename=f) }}">{{ f }}</a></li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    <p><a href="{{ url_for('index') }}">Run another analysis</a></p>
+</body>
+</html>

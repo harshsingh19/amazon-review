@@ -6,14 +6,16 @@ Created on Sat Apr 27 06:18:47 2019
 @author: harsh
 """
 
+from PyQt5.QtWidgets import (
+    QApplication, QMainWindow, QPushButton, QToolTip, QMessageBox,
+    QInputDialog, QLineEdit, QLabel, QWidget, QAction, QComboBox,
+    QHBoxLayout, QFrame, QSplitter, QStyleFactory, QTabWidget,
+    QVBoxLayout, QListWidget
+)
+from PyQt5.QtCore import QCoreApplication, QSize, pyqtSlot
+from PyQt5.QtGui import  QImage, QPalette, QBrush
 from PyQt5 import QtGui
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import QApplication,QMainWindow,QPushButton,QToolTip,QMessageBox,QInputDialog, QLineEdit,QLabel
-from PyQt5.QtCore import QCoreApplication,QSize
 import sys
-from PyQt5.QtWidgets import  QWidget, QAction,QComboBox,QHBoxLayout, QFrame, QSplitter,QStyleFactory,QTabWidget,QVBoxLayout,QListWidget
-from PyQt5.QtCore import pyqtSlot
-from PyQt5.QtGui import QImage,QPalette,QBrush
 from CorpusSentimentViewer import Viewer1
 from wordimageshower import Viewer2
 from amazon import main
@@ -30,7 +32,7 @@ class Window(QMainWindow):
 
     def __init__(self):
         super().__init__()
-        self.title = "Web Analizer"
+        self.title = "Web Analyzer"  # fixed spelling        
         self.top = 120
         self.left = 120
         self.width = 405
@@ -42,33 +44,41 @@ class Window(QMainWindow):
     
     def InitWindow(self):
         self.setWindowTitle(self.title)
-        self.setGeometry(self.top, self.left, self.width, self.height);
-        self.backgroudimage()
+        # setGeometry(x, y, width, height) – use left as x and top as y
+        self.setGeometry(self.top, self.left, self.width, self.height)
+        self.background_image()
         self.statusBar().showMessage("Ready")
         self.button()
         self.getText()
         self.llabel()
         self.show()
-    def backgroudimage(self):
-        oImage = QImage("result1.jpeg")
-        sImage = oImage.scaled(QSize(400,300))
-        palette = QPalette()
-        palette.setBrush(10, QBrush(sImage))
-        self.setPalette(palette)
-        self.label = QLabel('', self)
-        self.label.setGeometry(120,120,400,300)
+    def background_image(self):
+        """Apply a scaled background image to the window."""
+        path = "result1.jpeg"
+        if os.path.exists(path):
+            oImage = QImage(path)
+            sImage = oImage.scaled(QSize(self.width, self.height))
+            palette = QPalette()
+            palette.setBrush(QPalette.Window, QBrush(sImage))
+            self.setPalette(palette)
+        else:
+            # silently ignore if image not present
+            pass
     
     def button(self):
         #search Button
-        self.button1 = QPushButton("Submit",self)
+        self.button1 = QPushButton("Submit", self)
         self.button1.move(20,230)
         self.button1.setToolTip("<p>Button for Search Product Details</p>")
         self.button1.clicked.connect(self.on_click)
-        #close button
-        self.button2 = QPushButton("Exit",self)
+        # close button
+        self.button2 = QPushButton("Exit", self)
         self.button2.move(160,230)
         self.button2.setToolTip("<p>Button for Close </p>")
         self.button2.clicked.connect(self.CloseApp)
+        # raise buttons above the background in case of stacking issues
+        self.button1.raise_()
+        self.button2.raise_()
 
         self.button3 = QPushButton("Attributes",self)
         self.button3.move(290,50)
